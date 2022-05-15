@@ -59,13 +59,17 @@ public class fonctions {
     public static ArrayList<String[]> read_csv(ArrayList<String> csv_list, String path) throws FileNotFoundException {
         ArrayList<String[]> line_error = new ArrayList<>();
         ArrayList<String[]> line_success = new ArrayList<>();
+        String PathError = "";
+        String[] path_error = path.split("/");
+        for (int i = 0; i < path_error.length-1; i++) {
+            PathError += path_error[i]+"/";
+        }
         for (String csv: csv_list) {
             File file = new File(path+"/"+csv);
             try(CSVReader csvreader = new CSVReader(new FileReader(file))) {
                 String[] lineInArray;
                 String[] lineInArraySucess;
                 while ((lineInArray = csvreader.readNext()) != null) {
-                    System.out.println(!(lineInArray[0].length()> 15));
                     if(!(lineInArray[0].length()> 15)) {
                         for (int i = 0; i < 9; i++) {
                             Pattern p;
@@ -129,15 +133,10 @@ public class fonctions {
 
 
                     if(!line_error.isEmpty()){
-                        String[] path_error = path.split("/");
-                        String PathError = "";
-                        for (int i = 0; i < path_error.length-1; i++) {
-                            PathError += path_error[i]+"/";
-                        }
-
-                        try (CSVWriter writer = new CSVWriter(new FileWriter(PathError+"/Error/"+csv))) {
+                        try (CSVWriter writer = new CSVWriter(new FileWriter(PathError+"Error/"+csv))) {
                             writer.writeAll(line_error);
                         } catch (IOException e) {
+                            e.printStackTrace();
                             System.err.println("Erreur d'écriture du fichier csv d'erreur.");
                         }
                     }
@@ -146,8 +145,15 @@ public class fonctions {
             } catch (IOException | CsvValidationException e) {
                 e.printStackTrace();
             }
+            try{
+                Files.move(Paths.get(path + "/" +csv),Paths.get(PathError+"out/"+csv));
+            }catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Erreur lors du déplacement du fichier " + csv + "Dans le répertoire OUT");}
+
 
         }
+
         return line_success;
     }
 

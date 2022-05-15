@@ -57,7 +57,6 @@ public class DatabaseOperations {
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             if(rs.next()) {
-                System.out.println("ID_REMOUVRSEMENT IN DATABASE : ID : " +  id + "COUNT : " + rs.getInt("count_ID_remboursement"));
                 if(rs.getInt("count_ID_remboursement") > 0){
                     return true;
                 }else{
@@ -71,22 +70,11 @@ public class DatabaseOperations {
 
 
     void InsertOrUpdateInDataBase(ArrayList<String[]> line_csv_to_process) throws SQLException {
-        System.out.println(line_csv_to_process);
         try {
 
             for (String[] line_to_insert:line_csv_to_process) {
                 if (!idRemboursementInDatabase(line_to_insert[6]))
                 {
-                    System.out.println(line_to_insert[0]);
-                    System.out.println(line_to_insert[1]);
-                    System.out.println(line_to_insert[2]);
-                    System.out.println(line_to_insert[3]);
-                    System.out.println(line_to_insert[4]);
-                    System.out.println(line_to_insert[5]);
-                    System.out.println(line_to_insert[6]);
-                    System.out.println(line_to_insert[7]);
-                    System.out.println(line_to_insert[8]);
-                    System.out.println(line_to_insert[9]);
                     PreparedStatement pstmt = this.con.prepareStatement("INSERT INTO \"Java_project\".\"JavaProject\" (numero_securite_sociale, prenom, nom, date_naissance, numero_telephone, e_mail, \"ID_remboursement\", code_soin, montant_remboursement, \"Timestamp_fichier\") VALUES (?,?,?,?,?,?,?,?,?,?);");
                     pstmt.setString(1, line_to_insert[0]);
                     pstmt.setString(2, line_to_insert[1]);
@@ -100,7 +88,6 @@ public class DatabaseOperations {
                     pstmt.setString(10, line_to_insert[9]);
                     pstmt.executeUpdate();
                 }else{
-                    System.out.println("Je passe ici2");
                     PreparedStatement pstmt = this.con.prepareStatement("UPDATE \"Java_project\".\"JavaProject\" SET numero_securite_sociale=?, prenom=?, nom=?, date_naissance=?, numero_telephone=?, e_mail=?, \"ID_remboursement\"=?, code_soin=?, montant_remboursement=?, \"Timestamp_fichier\"=? WHERE \"ID_remboursement\" =?;");
                     pstmt.setString(1, line_to_insert[0]);
                     pstmt.setString(2, line_to_insert[1]);
