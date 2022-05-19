@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class DatabaseOperations {
@@ -85,7 +86,8 @@ public class DatabaseOperations {
                     pstmt.setString(7, line_to_insert[6]);
                     pstmt.setString(8, line_to_insert[7]);
                     pstmt.setString(9, line_to_insert[8]);
-                    pstmt.setString(10, line_to_insert[9]);
+                    Timestamp timestamp = fonctions.csvdateToTimestamp(line_to_insert[9]);
+                    pstmt.setTimestamp(10, timestamp);
                     pstmt.executeUpdate();
                 }else{
                     PreparedStatement pstmt = this.con.prepareStatement("UPDATE \"Java_project\".\"JavaProject\" SET numero_securite_sociale=?, prenom=?, nom=?, date_naissance=?, numero_telephone=?, e_mail=?, \"ID_remboursement\"=?, code_soin=?, montant_remboursement=?, \"Timestamp_fichier\"=? WHERE \"ID_remboursement\" =?;");
@@ -98,14 +100,15 @@ public class DatabaseOperations {
                     pstmt.setString(7, line_to_insert[6]);
                     pstmt.setString(8, line_to_insert[7]);
                     pstmt.setString(9, line_to_insert[8]);
-                    pstmt.setString(10, line_to_insert[9]);
+                    Timestamp timestamp = fonctions.csvdateToTimestamp(line_to_insert[9]);
+                    pstmt.setTimestamp(10, timestamp);
                     pstmt.setString(11, line_to_insert[6]);
                     pstmt.executeUpdate();
                 }
 
             }
 
-        } catch (SQLException throwables) {
+        } catch (SQLException | ParseException throwables) {
             throwables.printStackTrace();
         }
 

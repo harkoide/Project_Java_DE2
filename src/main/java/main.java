@@ -26,10 +26,6 @@ public class main {
                 /* Fermer la connection */
                 db.DatabaseCloseConnection();
             }
-
-
         }
-
     }
-
 }

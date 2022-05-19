@@ -5,6 +5,10 @@ import com.opencsv.exceptions.CsvValidationException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -19,7 +23,7 @@ public class fonctions {
         ArrayList<String> good_file = new ArrayList<>();
         // permet de lister les différent fichiers/repertoire de ce répertoire
         File[] liste = path_in.listFiles();
-        Pattern p = Pattern.compile("^users_\\d{8}.csv");
+        Pattern p = Pattern.compile("^users_\\d{14}.csv");
         //boucle qui parcour tous les résultats et avec un if pour le format d'écriture en fonction de si l'on a un fichier ou un repertoire
         for(File item : liste){
             if(item.isFile()) {
@@ -61,6 +65,7 @@ public class fonctions {
         ArrayList<String[]> line_success = new ArrayList<>();
         String PathError = "";
         String[] path_error = path.split("/");
+        boolean sortir = false;
         for (int i = 0; i < path_error.length-1; i++) {
             PathError += path_error[i]+"/";
         }
@@ -71,10 +76,10 @@ public class fonctions {
                 String[] lineInArraySucess;
                 while ((lineInArray = csvreader.readNext()) != null) {
                     if(!(lineInArray[0].length()> 15)) {
+                        sortir = false;
                         for (int i = 0; i < 9; i++) {
                             Pattern p;
                             Matcher m;
-                            boolean sortir = false;
                             switch (i) {
                                 case 0:
                                     p = Pattern.compile("^[0-1]\\d{14}");
@@ -99,7 +104,7 @@ public class fonctions {
                                     }
                                     break;
                                 case 4:
-                                    p = Pattern.compile("^0[6-7]\\d{8}");
+                                    p = Pattern.compile("^0\\d{9}");
                                     m = p.matcher(lineInArray[i]);
                                     if (!m.find()) {
                                         sortir = true;
@@ -122,26 +127,29 @@ public class fonctions {
                                     }
                                     break;
                             }
-                            if (sortir) {
-                                line_error.add(lineInArray);
-                                break;
-                            }
                         }
-                        String[] lineIneArrayTimeStamp = add_date_csv_file(csv, lineInArray);
-                        line_success.add(lineIneArrayTimeStamp);
+                        if(!sortir){
+                            String[] lineInArrayTimeStamp = add_date_csv_file(csv, lineInArray);
+                            line_success.add(lineInArrayTimeStamp);
+                        }
+                        else{
+                            line_error.add(lineInArray);
+                        }
+
                     }
 
-
-                    if(!line_error.isEmpty()){
-                        try (CSVWriter writer = new CSVWriter(new FileWriter(PathError+"Error/"+csv))) {
-                            writer.writeAll(line_error);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            System.err.println("Erreur d'écriture du fichier csv d'erreur.");
-                        }
-                    }
 
                 }
+
+                if(!line_error.isEmpty()){
+                    try (CSVWriter writer = new CSVWriter(new FileWriter(PathError+"Error/"+csv))) {
+                        writer.writeAll(line_error);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.err.println("Erreur d'écriture du fichier csv d'erreur.");
+                    }
+                }
+
             } catch (IOException | CsvValidationException e) {
                 e.printStackTrace();
             }
@@ -159,12 +167,20 @@ public class fonctions {
 
     public static String[] add_date_csv_file(String csv_name, String[] lineInArray) throws FileNotFoundException {
         String[] lineInArrayTimeStamp = new String[lineInArray.length+1];
-        String csv_date = csv_name.substring(6, 14);
+        String csv_date = csv_name.substring(6, 20);
         for (int i = 0; i < 9; i++) {
             lineInArrayTimeStamp[i]=lineInArray[i];
         }
         lineInArrayTimeStamp[9] = csv_date;
         return lineInArrayTimeStamp;
+    }
+
+    public static Timestamp csvdateToTimestamp(String csv_date) throws ParseException {
+        DateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        java.util.Date date = dateTimeFormat.parse(csv_date);
+        long time = date.getTime();
+        Timestamp timestamp = new Timestamp(time);
+        return timestamp;
     }
 
 }
