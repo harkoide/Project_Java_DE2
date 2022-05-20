@@ -12,6 +12,7 @@ public class DatabaseOperations {
     private Statement stmt;
     private ResultSet rs;
 
+    /* Constructeur */
     public DatabaseOperations(String server, String database, String user, String password, String port){
         this.server = server;
         this.database = database;
@@ -20,6 +21,7 @@ public class DatabaseOperations {
         this.port = port;
     }
 
+    /* connexion à la base de données */
     public void DatabaseConnection() {
         try{
             Class.forName ("org.postgresql.Driver");
@@ -33,7 +35,7 @@ public class DatabaseOperations {
         } catch(SQLException e) {System.err.println("Erreur lors de la connexion à la base de données.");}
     }
 
-
+    /* création d'un statement pour la base de donnée */
     public void DatabaseStatement() throws SQLException {
         try {
             this.stmt=con.createStatement();
@@ -42,6 +44,7 @@ public class DatabaseOperations {
 
     }
 
+    /* fermeture de la connexion à la base de donnée */
     void DatabaseCloseConnection() throws SQLException {
         try {
             //System.out.println(this.con);
@@ -52,6 +55,7 @@ public class DatabaseOperations {
         }catch (SQLException e){System.err.println("Erreur lors de la fermeture de la connection");}
     }
 
+    /* fonction permettant de vérifier i l'identifiant de rembrousement en question est contenu en base ou non */
     public boolean idRemboursementInDatabase(String id) {
         try {
             PreparedStatement pstmt = this.con.prepareStatement("SELECT COUNT(\"ID_remboursement\") AS count_ID_remboursement FROM \"Java_project\".\"JavaProject\" WHERE \"ID_remboursement\" = ?;");
@@ -69,7 +73,7 @@ public class DatabaseOperations {
         return false;
     }
 
-
+    /* Fonction qui insert ou update en base en fonction de ce que retourne la fonction précédente */
     void InsertOrUpdateInDataBase(ArrayList<String[]> line_csv_to_process) throws SQLException {
         try {
 

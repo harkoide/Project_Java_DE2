@@ -63,6 +63,7 @@ public class CsvOperation {
     public static ArrayList<String[]> read_csv(ArrayList<String> csv_list, String path) throws FileNotFoundException {
         ArrayList<String[]> line_error = new ArrayList<>();
         ArrayList<String[]> line_success = new ArrayList<>();
+        /* PathError varibale qui contient le chemin jusqu'au dossier ressource nommé ainsi car utilisé autrement avant */
         String PathError = "";
         String[] path_error = path.split("/");
         boolean sortir = false;
@@ -82,7 +83,7 @@ public class CsvOperation {
                             Matcher m;
                             switch (i) {
                                 case 0:
-                                    p = Pattern.compile("^[0-1]\\d{14}");
+                                    p = Pattern.compile("^[1-2]\\d{14}");
                                     m = p.matcher(lineInArray[i]);
                                     if (!m.find()) {
                                         sortir = true;
