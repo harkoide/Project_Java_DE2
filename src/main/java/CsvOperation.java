@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class fonctions {
+public class CsvOperation {
 
     public static  ArrayList<String> scan_repositories(File path_in, File path_out, File path_error) throws  FileNotFoundException{
         ArrayList<String> file_error = new ArrayList<>();
@@ -24,7 +24,7 @@ public class fonctions {
         // permet de lister les différent fichiers/repertoire de ce répertoire
         File[] liste = path_in.listFiles();
         Pattern p = Pattern.compile("^users_\\d{14}.csv");
-        //boucle qui parcour tous les résultats et avec un if pour le format d'écriture en fonction de si l'on a un fichier ou un repertoire
+        //boucle qui parcourt tous les résultats et avec un if pour le format d'écriture en fonction de si l'on a un fichier ou un repertoire
         for(File item : liste){
             if(item.isFile()) {
                 Matcher m = p.matcher(item.getName());

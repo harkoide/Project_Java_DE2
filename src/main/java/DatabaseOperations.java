@@ -86,7 +86,7 @@ public class DatabaseOperations {
                     pstmt.setString(7, line_to_insert[6]);
                     pstmt.setString(8, line_to_insert[7]);
                     pstmt.setString(9, line_to_insert[8]);
-                    Timestamp timestamp = fonctions.csvdateToTimestamp(line_to_insert[9]);
+                    Timestamp timestamp = CsvOperation.csvdateToTimestamp(line_to_insert[9]);
                     pstmt.setTimestamp(10, timestamp);
                     pstmt.executeUpdate();
                 }else{
@@ -100,7 +100,7 @@ public class DatabaseOperations {
                     pstmt.setString(7, line_to_insert[6]);
                     pstmt.setString(8, line_to_insert[7]);
                     pstmt.setString(9, line_to_insert[8]);
-                    Timestamp timestamp = fonctions.csvdateToTimestamp(line_to_insert[9]);
+                    Timestamp timestamp = CsvOperation.csvdateToTimestamp(line_to_insert[9]);
                     pstmt.setTimestamp(10, timestamp);
                     pstmt.setString(11, line_to_insert[6]);
                     pstmt.executeUpdate();
